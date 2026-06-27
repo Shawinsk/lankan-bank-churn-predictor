@@ -13,6 +13,10 @@
 
 An end-to-end Machine Learning pipeline and secure REST API developed specifically for **Bank of Ceylon (BOC)** to predict customer churn risk using localized Sri Lankan customer attributes, CRIB credit statuses, and LKR balance profiles.
 
+<div align="center">
+  <img src="images/home-page.png" alt="BOC Churn Prediction Form" width="700">
+</div>
+
 ---
 
 ## 📋 Table of Contents
@@ -219,6 +223,12 @@ The model is optimized using the following parameters:
 
 ## 6. Model Validation & Test Results <a id="test-results"></a>
 The prediction pipeline and the secure REST API endpoints have been rigorously tested against localized edge-cases. The test results verify both prediction logic accuracy and API authentication security.
+
+<div align="center">
+  <img src="images/db-dashboard.png" alt="BOC Database Dashboard" width="700">
+  <br><br>
+  <img src="images/batch-prediction.png" alt="BOC Batch Prediction Interface" width="700">
+</div>
 
 ### 🧪 1. Functional Customer Scenarios (Model Logic)
 The model was evaluated against 4 real-world banking profiles:
