@@ -1,0 +1,4 @@
+Bank,Branch,CreditScore,Geography,Gender,Age,Tenure,Balance,NumOfProducts,HasCrCard,IsActiveMember,EstimatedSalary,CRIB_Status,Recent_Loan_Rejected,Digital_Banking_User
+Bank of Ceylon (BOC),BOC - Kollupitiya,600,Colombo,Male,40,3,60000,2,1,1,85000,Clean,0,1
+Bank of Ceylon (BOC),BOC - Gampaha Main,720,Gampaha,Female,30,5,150000,1,1,0,120000,Clean,0,1
+Bank of Ceylon (BOC),BOC - Kandy Super Grade,580,Kandy,Male,50,2,0,2,0,1,90000,Defaulted,1,0

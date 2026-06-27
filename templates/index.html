@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>BOC Customer Churn Prediction | Bank of Ceylon</title>
+    <meta name="description" content="Bank of Ceylon Customer Churn Prediction System powered by AI and Sri Lankan banking data.">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --boc-gold:   #f59e0b;
+            --boc-dark:   #d97706;
+            --bg-deep:    #0f172a;
+            --bg-card:    #1e293b;
+            --bg-input:   #0f172a;
+            --text-main:  #f1f5f9;
+            --text-muted: #94a3b8;
+            --border:     rgba(255,255,255,0.1);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a2744 50%, #1e293b 100%);
+            min-height: 100vh;
+            color: var(--text-main);
+            padding-bottom: 40px;
+        }
+
+        /* ── HEADER ── */
+        .boc-header {
+            background: linear-gradient(135deg, #1a1000 0%, #2d1f00 50%, #1a1000 100%);
+            border-bottom: 2px solid var(--boc-gold);
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .boc-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .boc-logo {
+            width: 52px; height: 52px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 700; color: #fff;
+            box-shadow: 0 4px 15px rgba(245,158,11,0.4);
+        }
+        .boc-header h1 {
+            font-size: 1.3rem; font-weight: 700; margin: 0;
+            background: linear-gradient(to right, #f59e0b, #fde68a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .boc-header p { margin: 0; font-size: 0.8rem; color: #a97a00; }
+
+        .boc-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 0.88rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+        .boc-nav a:hover, .boc-nav a.active {
+            background: rgba(245,158,11,0.15);
+            color: var(--boc-gold);
+        }
+
+        /* ── HERO BANNER ── */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 30px;
+        }
+        .hero h2 {
+            font-size: 2rem; font-weight: 700;
+            background: linear-gradient(to right, #f59e0b, #fde68a, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .hero p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* ── FORM CARD ── */
+        .form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px 36px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--boc-gold);
+            margin: 24px 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(245,158,11,0.2);
+        }
+
+        label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .form-control {
+            background: var(--bg-input) !important;
+            color: var(--text-main) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 8px !important;
+            font-size: 0.9rem;
+            padding: 9px 12px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-control:focus {
+            border-color: var(--boc-gold) !important;
+            box-shadow: 0 0 0 3px rgba(245,158,11,0.15) !important;
+            outline: none;
+        }
+        .form-control option { background: #1e293b; }
+
+        .btn-boc {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(245,158,11,0.35);
+        }
+        .btn-boc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(245,158,11,0.5);
+        }
+        .btn-boc i { margin-right: 8px; }
+
+        /* ── BADGE ── */
+        .boc-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+            color: var(--boc-gold);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="boc-header">
+        <div class="brand">
+            <div class="boc-logo">B</div>
+            <div>
+                <h1>Bank of Ceylon</h1>
+                <p>ලංකා බැංකුව — Sri Lanka's Premier State Bank</p>
+            </div>
+        </div>
+        <nav class="boc-nav">
+            <a href="/" class="active"><i class="fas fa-user-check"></i> Single Prediction</a>
+            <a href="/batch"><i class="fas fa-file-csv"></i> Batch Upload</a>
+            <a href="/db_dashboard"><i class="fas fa-database"></i> Dashboard</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h2><i class="fas fa-brain" style="font-size:1.5rem;"></i> Customer Churn Prediction</h2>
+        <p>AI-powered churn analysis built specifically for Sri Lankan banking data</p>
+        <div class="boc-badge"><i class="fas fa-map-marker-alt"></i> Sri Lanka | LKR | CRIB | 25 Districts</div>
+    </div>
+
+    <!-- FORM -->
+    <div class="container-fluid px-3 px-md-5">
+        <div class="form-card">
+            <form action="/predict" method="post">
+
+                <div class="section-title"><i class="fas fa-id-card"></i> Customer Information</div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Surname</label>
+                        <input type="text" class="form-control" name="Surname" placeholder="e.g., Perera" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Credit Score</label>
+                        <input type="number" step="1" min="0" max="900" class="form-control" name="creditScore" placeholder="e.g., 650" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label><i class="fas fa-map-marker-alt" style="color:var(--boc-gold)"></i> District</label>
+                        <select class="form-control" id="geography" name="geography" required>
+                            <option value="" disabled selected>Select District</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Gampaha">Gampaha</option>
+                            <option value="Kalutara">Kalutara</option>
+                            <option value="Kandy">Kandy</option>
+                            <option value="Matale">Matale</option>
+                            <option value="Nuwara Eliya">Nuwara Eliya</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Matara">Matara</option>
+                            <option value="Hambantota">Hambantota</option>
+                            <option value="Jaffna">Jaffna</option>
+                            <option value="Kilinochchi">Kilinochchi</option>
+                            <option value="Mannar">Mannar</option>
+                            <option value="Vavuniya">Vavuniya</option>
+                            <option value="Mullaitivu">Mullaitivu</option>
+                            <option value="Batticaloa">Batticaloa</option>
+                            <option value="Trincomalee">Trincomalee</option>
+                            <option value="Ampara">Ampara</option>
+                            <option value="Kurunegala">Kurunegala</option>
+                            <option value="Puttalam">Puttalam</option>
+                            <option value="Anuradhapura">Anuradhapura</option>
+                            <option value="Polonnaruwa">Polonnaruwa</option>
+                            <option value="Badulla">Badulla</option>
+                            <option value="Moneragala">Moneragala</option>
+                            <option value="Ratnapura">Ratnapura</option>
+                            <option value="Kegalle">Kegalle</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Gender</label>
+                        <select class="form-control" name="gender" required>
+                            <option value="" disabled selected>Select gender</option>
+                            <option value="0">Male</option>
+                            <option value="1">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="section-title"><i class="fas fa-chart-line"></i> Account Details</div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Age</label>
+                        <input type="number" step="1" min="18" max="75" class="form-control" name="age" placeholder="e.g., 35" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Tenure (Years at BOC)</label>
+                        <input type="number" step="1" min="0" max="25" class="form-control" name="tenure" placeholder="e.g., 5" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Number of Products</label>
+                        <input type="number" step="1" min="1" max="4" class="form-control" name="numberOfProducts" placeholder="e.g., 2" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Account Balance (LKR)</label>
+                        <input type="number" step="1" min="0" class="form-control" name="balance" placeholder="e.g., 500000" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Estimated Annual Salary (LKR)</label>
+                        <input type="number" step="1" min="0" class="form-control" name="estimatedSalary" placeholder="e.g., 1200000" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Has Credit Card?</label>
+                        <select class="form-control" name="creditCard" required>
+                            <option value="" disabled selected>Select option</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Active Member?</label>
+                        <select class="form-control" name="activeMember" required>
+                            <option value="" disabled selected>Select option</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label><i class="fas fa-code-branch" style="color:var(--boc-gold)"></i> BOC Branch</label>
+                        <select class="form-control" id="branch" name="branch" required>
+                            <option value="" disabled selected>Select District first</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label><i class="fas fa-university" style="color:var(--boc-gold)"></i> CRIB Status</label>
+                        <select class="form-control" name="cribStatus" required>
+                            <option value="" disabled selected>Select CRIB Status</option>
+                            <option value="Clean">Clean</option>
+                            <option value="Defaulted">Defaulted</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="section-title"><i class="fas fa-shield-alt"></i> Risk Indicators</div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Recent Loan Rejected?</label>
+                        <select class="form-control" name="recentLoanRejected" required>
+                            <option value="" disabled selected>Select option</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Digital Banking User? (BOC Online / Boc Ipay)</label>
+                        <select class="form-control" name="digitalBankingUser" required>
+                            <option value="" disabled selected>Select option</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-boc">
+                    <i class="fas fa-brain"></i> Predict Churn Risk
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Bank of Ceylon Customer Churn Prediction System &bull; Powered by LightGBM &bull; Sri Lankan Banking Data 2023/2024</p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Complete BOC Branch list for all 25 districts
+        const bocBranches = {
+            "Colombo": [
+                "Fort", "Kollupitiya", "Bambalapitiya", "Wellawatte", "Havelock Town", "Cinnamon Gardens",
+                "Borella", "Maradana", "Pettah", "Hultsdorf", "Kotahena", "Grandpass", "Mattakkuliya",
+                "Bloemendhal", "Mutwal", "Nugegoda", "Maharagama", "Pannipitiya", "Kottawa", "Homagama",
+                "Padukka", "Hanwella", "Avissawella", "Kosgama", "Kaduwela", "Battaramulla", "Pelawatta",
+                "Isurupaya Admin Complex", "Rajagiriya", "Nawala", "Ethul Kotte", "Pitakotte", "Thalawathugoda",
+                "Moratuwa", "Ratmalana", "Mount Lavinia", "Dehiwala", "Kohuwala", "Boralesgamuwa",
+                "Piliyandala", "Kesbewa", "Athurugiriya", "Malabe", "Mulleriyawa", "Kolonnawa",
+                "Wellampitiya", "Gothatuwa", "Meegoda", "Godagama", "Meepe", "Kiriwandala", "Pugoda"
+            ],
+            "Gampaha": [
+                "Gampaha Main", "Negombo Super Grade", "Negombo Bazaar", "Kelaniya", "Wattala", "Nittambuwa",
+                "Peliyagoda", "Kadawatha", "Minuwangoda", "Biyagama", "Divulapitiya", "Ja-Ela",
+                "Katunayake (Airport)", "Katunayake (FTZ)", "Seeduwa", "Veyangoda", "Yakkala", "Bemmulla",
+                "Delgoda", "Demanhandiya", "Dompe", "Ekala", "Ganemulla", "Kandana", "Kiribathgoda",
+                "Mahabage", "Makewita", "Malwana", "Mirigama", "Mudungoda", "Pasyala", "Radawana",
+                "Ragama", "Udugampola", "Welisara", "Weliweriya", "Bopitiya", "Pamunugama", "Kochchikade", "Raddolugama"
+            ],
+            "Kalutara": [
+                "Kalutara Main", "Panadura", "Horana", "Matugama", "Bandaragama", "Beruwala", "Aluthgama",
+                "Agalawatta", "Dodangoda", "Wadduwa", "Bulathsinhala", "Ingiriya", "Meegahatenna",
+                "Payagala", "Welipenna", "Moragahahena", "Dharga Town", "Palindanuwara", "Walallawita"
+            ],
+            "Kandy": [
+                "Kandy Super Grade", "Kandy City Centre (KCC)", "Kandy Second City", "Peradeniya",
+                "Katugastota", "Gampola", "Nawalapitiya", "Kadugannawa", "Pilimatalawa", "Akurana",
+                "Gelioya", "Wattegama", "Ampitiya", "Digana", "Galagedara", "Galaha", "Kundasale",
+                "Madawala", "Menikhinna", "Pussellawa", "Teldeniya", "Udatalawinna", "Hasalaka",
+                "Rikillagaskada", "Alawatugoda", "Bokkawala", "Daulagala", "Handessa", "Pallekele"
+            ],
+            "Matale": [
+                "Matale Main", "Dambulla", "Galewela", "Ukuwela", "Rattota", "Naula", "Sigiriya",
+                "Palapathwela", "Yatawatta", "Laggala", "Inamaluwa", "Nalanda", "Pallepola"
+            ],
+            "Nuwara Eliya": [
+                "Nuwara Eliya Main", "Hatton", "Talawakelle", "Nanu Oya", "Norwood", "Bogawantalawa",
+                "Maskeliya", "Agarapathana", "Ginigathena", "Hanguranketha", "Kotagala", "Pundaluoya"
+            ],
+            "Galle": [
+                "Galle Main", "Galle Fort", "Karapitiya", "Hikkaduwa", "Ambalangoda", "Elpitiya",
+                "Baddegama", "Neluwa", "Karandeniya", "Ahangama", "Bentota", "Habaraduwa",
+                "Rathgama", "Udugama", "Hiniduma", "Koggala", "Pitigala", "Yakkalamulla"
+            ],
+            "Matara": [
+                "Matara Super Grade", "Weligama", "Akuressa", "Kamburupitiya", "Dikwella", "Hakmana",
+                "Morawaka", "Deniyaya", "Devinuwara", "Malimbada", "Pasgoda", "Urubokka"
+            ],
+            "Hambantota": [
+                "Hambantota Main", "Tangalle", "Ambalantota", "Tissamaharama", "Beliatta", "Walasmulla",
+                "Suriyawewa", "Middeniya", "Weeraketiya", "Admin Complex (Siribopura)", "Ranna"
+            ],
+            "Jaffna": [
+                "Jaffna Super Grade", "Jaffna 2nd", "Nallur", "Chunnakam", "Point Pedro", "Chavakachcheri",
+                "Kopay", "Manipay", "Kodikamam", "Velanai", "Kankesanthurai", "Chankanai", "Kaithady",
+                "Alaveddy", "Nelliady", "Tellippalai", "Uduvil", "Valvettithurai", "Puttur"
+            ],
+            "Kilinochchi": [
+                "Kilinochchi Main", "Pallai", "Pooneryn", "Paranthan", "Kandavalai", "Pachchilaipalli"
+            ],
+            "Mannar": [
+                "Mannar Main", "Murunkan", "Pesalai", "Nanaddan", "Madhu", "Thalaimannar"
+            ],
+            "Vavuniya": [
+                "Vavuniya Main", "Vavuniya South", "Cheddikulam", "Omanthai", "Nedunkeni"
+            ],
+            "Mullaitivu": [
+                "Mullaitivu Main", "Puthukkudiyiruppu", "Mankulam", "Mallavi", "Oddusuddan"
+            ],
+            "Batticaloa": [
+                "Batticaloa Super Grade", "Kattankudy", "Valachchenai", "Eravur", "Kaluwanchikudy",
+                "Vakarai", "Chenkalady", "Kokkadichcholai", "Oddamavadi"
+            ],
+            "Ampara": [
+                "Ampara Main", "Kalmunai", "Akkaraipattu", "Sammanthurai", "Pothuvil", "Maha Oya",
+                "Dehiattakandiya", "Uhana", "Nintavur", "Sainthamaruthu"
+            ],
+            "Trincomalee": [
+                "Trincomalee Super Grade", "Kinniya", "Muttur", "Kantale", "Kuchchaveli", "Serunuwara",
+                "Gomarankadawala", "Pulmoddai", "Thampalakamam"
+            ],
+            "Kurunegala": [
+                "Kurunegala Super Grade", "Kurunegala 2nd City", "Kuliyapitiya", "Wariyapola", "Narammala",
+                "Pannala", "Mawathagama", "Polgahawela", "Alawwa", "Maho", "Galgamuwa", "Giriulla",
+                "Hettipola", "Ibbagamuwa", "Nikaweratiya", "Kobeigane"
+            ],
+            "Puttalam": [
+                "Puttalam Main", "Chilaw", "Wennappuwa", "Nattandiya", "Anamaduwa", "Kalpitiya",
+                "Marawila", "Dankotuwa", "Madampe", "Mundel", "Nawagattegama"
+            ],
+            "Anuradhapura": [
+                "Anuradhapura Super Grade", "Kekirawa", "Medawachchiya", "Tambuttegama", "Eppawala",
+                "Galnewa", "Horowpothana", "Padaviya", "Nochchiyagama", "Galenbindunuwewa",
+                "Mihintale", "Rajanganaya", "Talawa", "Thirappane", "Bulnewa", "Nachchaduwa"
+            ],
+            "Polonnaruwa": [
+                "Polonnaruwa Main", "Kaduruwela", "Hingurakgoda", "Medirigiriya", "Welikanda",
+                "Aralaganwila", "Bakamuna", "Elahera"
+            ],
+            "Badulla": [
+                "Badulla Super Grade", "Bandarawela", "Haputale", "Mahiyanganaya", "Welimada",
+                "Hali Ela", "Passara", "Diyatalawa", "Ella", "Kandaketiya", "Meegahakivula"
+            ],
+            "Moneragala": [
+                "Moneragala Main", "Wellawaya", "Bibile", "Buttala", "Kataragama", "Medagama"
+            ],
+            "Ratnapura": [
+                "Ratnapura Super Grade", "Ratnapura City", "Pelmadulla", "Balangoda", "Embilipitiya",
+                "Kuruwita", "Eheliyagoda", "Rakwana", "Kahawatta", "Kalawana", "Godakawela"
+            ],
+            "Kegalle": [
+                "Kegalle Main", "Kegalle City", "Mawanella", "Ruwanwella", "Warakapola",
+                "Rambukkana", "Yatiyantota", "Deraniyagala", "Galigamuwa", "Aranayaka", "Pinnawala"
+            ]
+        };
+
+        // Populate BOC branches when district changes
+        document.getElementById('geography').addEventListener('change', function () {
+            const district = this.value;
+            const branches = bocBranches[district] || [];
+            const branchSelect = document.getElementById('branch');
+            branchSelect.innerHTML = '<option value="" disabled selected>Select Branch</option>';
+            branches.forEach(branch => {
+                const opt = document.createElement('option');
+                const label = branch.startsWith('BOC') ? branch : 'BOC - ' + branch;
+                opt.value = label;
+                opt.textContent = label;
+                branchSelect.appendChild(opt);
+            });
+        });
+    </script>
+
+</body>
+</html>

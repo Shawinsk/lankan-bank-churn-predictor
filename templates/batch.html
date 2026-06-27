@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>BOC Customer Churn - Batch Upload | Bank of Ceylon</title>
+    <meta name="description" content="Bank of Ceylon Customer Churn Batch Upload System.">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Outfit Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --boc-gold:   #f59e0b;
+            --boc-dark:   #d97706;
+            --bg-deep:    #0f172a;
+            --bg-card:    #1e293b;
+            --bg-input:   #0f172a;
+            --text-main:  #f1f5f9;
+            --text-muted: #94a3b8;
+            --border:     rgba(255,255,255,0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a2744 50%, #1e293b 100%);
+            min-height: 100vh;
+            color: var(--text-main);
+            padding-bottom: 40px;
+        }
+
+        /* ── HEADER ── */
+        .boc-header {
+            background: linear-gradient(135deg, #1a1000 0%, #2d1f00 50%, #1a1000 100%);
+            border-bottom: 2px solid var(--boc-gold);
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .boc-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .boc-logo {
+            width: 52px; height: 52px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 700; color: #fff;
+            box-shadow: 0 4px 15px rgba(245,158,11,0.4);
+        }
+        .boc-header h1 {
+            font-size: 1.3rem; font-weight: 700; margin: 0;
+            background: linear-gradient(to right, #f59e0b, #fde68a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .boc-header p { margin: 0; font-size: 0.8rem; color: #a97a00; }
+
+        .boc-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 0.88rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+        .boc-nav a:hover, .boc-nav a.active {
+            background: rgba(245,158,11,0.15);
+            color: var(--boc-gold);
+        }
+
+        /* ── HERO BANNER ── */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 30px;
+        }
+        .hero h2 {
+            font-size: 2rem; font-weight: 700;
+            background: linear-gradient(to right, #f59e0b, #fde68a, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .hero p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .form-container {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px 36px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+            border-color: var(--boc-gold) !important;
+            font-weight: 700;
+            padding: 10px 24px;
+            box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+            transition: all 0.2s;
+        }
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(245,158,11,0.45);
+        }
+        .btn-outline-primary {
+            color: var(--boc-gold) !important;
+            border-color: var(--boc-gold) !important;
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--boc-gold) !important;
+            color: #1e293b !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="boc-header">
+        <div class="brand">
+            <div class="boc-logo">B</div>
+            <div>
+                <h1>Bank of Ceylon</h1>
+                <p>ලංකා බැංකුව — Sri Lanka's Premier State Bank</p>
+            </div>
+        </div>
+        <nav class="boc-nav">
+            <a href="/"><i class="fas fa-user-check"></i> Single Prediction</a>
+            <a href="/batch" class="active"><i class="fas fa-file-csv"></i> Batch Upload</a>
+            <a href="/db_dashboard"><i class="fas fa-database"></i> Dashboard</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h2><i class="fas fa-file-csv" style="font-size:1.5rem;"></i> Batch Prediction Integration</h2>
+        <p>Upload a customer batch file to run high-throughput churn evaluations on Bank of Ceylon customer datasets</p>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 form-container">
+                <h5 class="mb-3 text-center" style="color: var(--boc-gold);">Upload Customers CSV File</h5>
+                <p class="text-muted text-center small">Upload a CSV file containing multiple customer records. The system will calculate the churn risk for each customer and return a downloadable CSV with the prediction results.</p>
+                
+                <hr style="border-color: rgba(255,255,255,0.1);">
+
+                <form action="/batch" method="post" enctype="multipart/form-data" class="my-4">
+                    <div class="form-group text-center">
+                        <label for="file" class="d-block mb-3 text-muted">Choose CSV File:</label>
+                        <input type="file" class="form-control-file border p-2 rounded d-inline-block" name="file" accept=".csv" required style="max-width: 320px; background-color: var(--bg-deep); color: var(--text-main); border-color: var(--border);">
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success px-4"><i class="fas fa-play mr-1"></i> Process and Predict Churn</button>
+                    </div>
+                </form>
+
+                <hr style="border-color: rgba(255,255,255,0.1);">
+
+                <div class="mt-4">
+                    <h6 style="color: var(--boc-gold);">Sample / Required CSV Schema:</h6>
+                    <p class="small text-muted">Your CSV must include the following columns. The order does not matter, but all names must match exactly:</p>
+                    <code class="d-block bg-dark text-light p-3 rounded mb-3 small" style="word-break: break-all;">
+                        CustomerId,Surname,CreditScore,Geography,Gender,Age,Tenure,Balance,NumOfProducts,HasCrCard,IsActiveMember,EstimatedSalary,CRIB_Status,Recent_Loan_Rejected,Digital_Banking_User
+                    </code>
+                    <div class="text-center">
+                        <a href="/static/sample_customers.csv" class="btn btn-outline-primary btn-sm"><i class="fas fa-download mr-1"></i> Download Sample CSV Template</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

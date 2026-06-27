@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>BOC Customer Churn - Database Dashboard | Bank of Ceylon</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Outfit Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --boc-gold:   #f59e0b;
+            --boc-dark:   #d97706;
+            --bg-deep:    #0f172a;
+            --bg-card:    #1e293b;
+            --border:     rgba(255,255,255,0.1);
+            --text-main:  #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a2744 50%, #1e293b 100%);
+            min-height: 100vh;
+            color: var(--text-main);
+            padding-bottom: 40px;
+        }
+
+        /* ── HEADER ── */
+        .boc-header {
+            background: linear-gradient(135deg, #1a1000 0%, #2d1f00 50%, #1a1000 100%);
+            border-bottom: 2px solid var(--boc-gold);
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .boc-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .boc-logo {
+            width: 52px; height: 52px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 700; color: #fff;
+            box-shadow: 0 4px 15px rgba(245,158,11,0.4);
+        }
+        .boc-header h1 {
+            font-size: 1.3rem; font-weight: 700; margin: 0;
+            background: linear-gradient(to right, #f59e0b, #fde68a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .boc-header p { margin: 0; font-size: 0.8rem; color: #a97a00; }
+
+        .boc-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 0.88rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+        .boc-nav a:hover, .boc-nav a.active {
+            background: rgba(245,158,11,0.15);
+            color: var(--boc-gold);
+        }
+
+        .table-container {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+        .table {
+            color: var(--text-main);
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+        .table td, .table th {
+            border-color: var(--border);
+            font-size: 0.88rem;
+            vertical-align: middle;
+        }
+        .badge-pending {
+            background-color: #ffc107;
+            color: #212529;
+            font-weight: 600;
+        }
+        .badge-no {
+            background-color: #28a745;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .badge-yes {
+            background-color: #dc3545;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+            border-color: var(--boc-gold) !important;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(245,158,11,0.45);
+        }
+        .btn-outline-secondary {
+            color: var(--text-muted) !important;
+            border-color: var(--border) !important;
+        }
+        .btn-outline-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            color: var(--text-main) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="boc-header">
+        <div class="brand">
+            <div class="boc-logo">B</div>
+            <div>
+                <h1>Bank of Ceylon</h1>
+                <p>ලංකා බැංකුව — Sri Lanka's Premier State Bank</p>
+            </div>
+        </div>
+        <nav class="boc-nav">
+            <a href="/"><i class="fas fa-user-check"></i> Single Prediction</a>
+            <a href="/batch"><i class="fas fa-file-csv"></i> Batch Upload</a>
+            <a href="/db_dashboard" class="active"><i class="fas fa-database"></i> Dashboard</a>
+        </nav>
+    </header>
+
+    <div class="container-fluid px-4 px-md-5">
+        <div class="row justify-content-center">
+            <div class="col-12 table-container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0" style="color: var(--boc-gold); font-weight: 600;">
+                        <i class="fas fa-database mr-2"></i> Database Records (SQLite: churn.db)
+                    </h4>
+                    <div>
+                        <a href="/db_predict_run" class="btn btn-primary btn-sm"><i class="fas fa-play mr-1"></i> Run Nightly Batch Job</a>
+                        <a href="/db_reset" class="btn btn-outline-secondary btn-sm ml-2"><i class="fas fa-undo mr-1"></i> Reset DB</a>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Surname</th>
+                                <th>Credit Score</th>
+                                <th>District / Region</th>
+                                <th>Bank</th>
+                                <th>Branch</th>
+                                <th>Gender</th>
+                                <th>Age</th>
+                                <th>Tenure</th>
+                                <th>Balance (LKR)</th>
+                                <th>Products</th>
+                                <th>Credit Card</th>
+                                <th>Active Member</th>
+                                <th>Salary (LKR)</th>
+                                <th>CRIB Status</th>
+                                <th>Recent Loan Rejected</th>
+                                <th>Digital Banking User</th>
+                                <th>Churn Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer in customers %}
+                            <tr>
+                                <td>{{ customer.CustomerId }}</td>
+                                <td>{{ customer.Surname }}</td>
+                                <td>{{ customer.CreditScore }}</td>
+                                <td>{{ customer.Geography }}</td>
+                                <td>{{ customer.Bank or 'N/A' }}</td>
+                                <td>{{ customer.Branch or 'N/A' }}</td>
+                                <td>{{ customer.Gender }}</td>
+                                <td>{{ customer.Age }}</td>
+                                <td>{{ customer.Tenure }}</td>
+                                <td>{{ "{:,.2f}".format(customer.Balance) }}</td>
+                                <td>{{ customer.NumOfProducts }}</td>
+                                <td>{{ 'Yes' if customer.HasCrCard == 1 else 'No' }}</td>
+                                <td>{{ 'Yes' if customer.IsActiveMember == 1 else 'No' }}</td>
+                                <td>{{ "{:,.2f}".format(customer.EstimatedSalary) }}</td>
+                                <td>{{ customer.CRIB_Status or 'Clean' }}</td>
+                                <td>{{ 'Yes' if customer.Recent_Loan_Rejected == 1 else 'No' }}</td>
+                                <td>{{ 'Yes' if customer.Digital_Banking_User == 1 else 'No' }}</td>
+                                <td>
+                                    {% if customer.PredictionResult == 'Pending' %}
+                                        <span class="badge badge-pending px-3 py-2 rounded"><i class="fas fa-clock mr-1"></i> Pending</span>
+                                    {% elif customer.PredictionResult == 'No' %}
+                                        <span class="badge badge-no px-3 py-2 rounded"><i class="fas fa-check-circle mr-1"></i> No Churn</span>
+                                    {% else %}
+                                        <span class="badge badge-yes px-3 py-2 rounded"><i class="fas fa-exclamation-triangle mr-1"></i> Churn Risk</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+COLUMNS:
+  Age: int64
+  Tenure_Years: int64
+  Account_Balance_LKR: float64
+  District: object
+  CRIB_Status: object
+  Recent_Loan_Rejected: int64
+  Digital_Banking_User: int64
+  Churn: int64
+
+TARGET_COLUMN:
+  name: Churn
